@@ -1,0 +1,56 @@
+title: hullcaster
+name: hullcaster
+license: MIT
+source-code:
+  - https://github.com/gilcu3/hullcaster
+issues:
+  - https://github.com/durrendal/hullcaster-snap
+contact:
+  - durrendal@lambdacreate.com
+base: core24
+version: v0.2.0
+summary: Terminal-based podcast manager built in Rust
+description: |
+  Hullcaster is a terminal-based podcast manager with an ncurses-like interface.
+  It allows you to subscribe to podcast feeds, sync feeds to check for new 
+  episodes, download episodes locally, and play them with an external media player.
+  
+  Features:
+  - Terminal UI for podcast management
+  - Subscribe to and manage multiple podcast feeds
+  - Download episodes for offline listening
+  - Automatic syncing for new episodes
+  - Import/export OPML files
+  - Configurable keybindings
+  - SQLite-based local database
+
+grade: stable
+confinement: strict
+
+apps:
+  hullcaster:
+    command: bin/hullcaster
+    plugs:
+      - network
+      - home
+      - audio-playback
+    environment:
+      XDG_CONFIG_HOME: $SNAP_USER_COMMON/.config
+      XDG_DATA_HOME: $SNAP_USER_DATA/.local/share
+
+parts:
+  hullcaster:
+    plugin: rust
+    source: https://github.com/gilcu3/hullcaster.git
+    source-tag: $SNAPCRAFT_PROJECT_VERSION
+    build-packages:
+      - pkg-config
+      - libsqlite3-dev
+      - libssl-dev
+    stage-packages:
+      - libsqlite3-0
+      - libssl3
+      - ca-certificates
+    override-build: |
+      cargo build --release --locked
+      install -D -m755 target/release/hullcaster $SNAPCRAFT_PART_INSTALL/bin/hullcaster

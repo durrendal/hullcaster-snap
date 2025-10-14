@@ -13,10 +13,12 @@ summary: Terminal-based podcast manager built in Rust
 description: |
   Hullcaster is a terminal-based podcast manager with an ncurses-like interface.
   It allows you to subscribe to podcast feeds, sync feeds to check for new 
-  episodes, download episodes locally, and play them with an external media player.
+  episodes, download episodes locally, and play them with an internal or 
+  external media player.
   
   Features:
   - Terminal UI for podcast management
+  - Built-in audio player for podcast playback
   - Subscribe to and manage multiple podcast feeds
   - Download episodes for offline listening
   - Automatic syncing for new episodes
@@ -34,9 +36,11 @@ apps:
       - network
       - home
       - audio-playback
+      - pulseaudio
     environment:
       XDG_CONFIG_HOME: $SNAP_USER_COMMON/.config
       XDG_DATA_HOME: $SNAP_USER_DATA/.local/share
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
 
 parts:
   hullcaster:
@@ -51,12 +55,11 @@ parts:
       - libdbus-1-dev
     stage-packages:
       - libsqlite3-0
-      - libssl3
+      - libssl3t64
       - libasound2
       - libasound2-plugins
       - libpulse0
       - libsndfile1
-      - oss4-base
       - libdbus-1-3
       - ca-certificates
     override-build: |

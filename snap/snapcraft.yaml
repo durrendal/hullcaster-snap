@@ -29,21 +29,64 @@ description: |
 grade: stable
 confinement: strict
 
+# Layout for ALSA libraries
+layout:
+  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
+    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+  /usr/share/alsa:
+    bind: $SNAP/usr/share/alsa
+
 apps:
   hullcaster:
+    command-chain: ["snap/command-chain/alsa-launch"]
     command: bin/hullcaster
     plugs:
       - network
       - home
       - audio-playback
+      - audio-record
       - pulseaudio
+      - alsa
     environment:
       XDG_CONFIG_HOME: $SNAP_USER_COMMON/.config
       XDG_DATA_HOME: $SNAP_USER_DATA/.local/share
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET
+      ALSA_CARD: sysdefault:CARD=PCH
+      # Force PulseAudio over ALSA
+      ALWAYS_USE_PULSEAUDIO: "1"
 
 parts:
+  # ALSA mixin part - must be defined before hullcaster
+  alsa-mixin:
+    plugin: dump
+    source: https://github.com/diddlesnaps/snapcraft-alsa.git
+    source-subdir: snapcraft-assets
+    build-packages:
+      - libasound2-dev
+    stage-packages:
+      - libasound2
+      - libasound2-plugins
+      - yad
+    stage:
+      # Restrict to only audio-related files
+      - etc/asound.conf
+      - snap/command-chain/alsa-launch
+      - usr/bin/yad*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasound*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libdnsfile*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libFLAC*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libjack*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libpulse*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsamplerate*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libspeex*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsndfile*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libvorbis*
+      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libogg*
+      - usr/share/alsa
+
   hullcaster:
+    after: [alsa-mixin]
     plugin: rust
     source: https://github.com/gilcu3/hullcaster.git
     source-tag: $SNAPCRAFT_PROJECT_VERSION
@@ -53,6 +96,7 @@ parts:
       - libssl-dev
       - libasound2-dev
       - libdbus-1-dev
+      - libpulse-dev
     stage-packages:
       - libsqlite3-0
       - libssl3t64
@@ -62,6 +106,9 @@ parts:
       - libsndfile1
       - libdbus-1-3
       - ca-certificates
+      - pulseaudio-utils
+      - libpulsedsp
+      - libportaudio2
     override-build: |
       cargo build --release --locked
       install -D -m755 target/release/hullcaster $SNAPCRAFT_PART_INSTALL/bin/hullcaster

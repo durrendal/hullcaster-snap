@@ -31,8 +31,8 @@ confinement: strict
 
 # Layout for ALSA libraries
 layout:
-  /usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib:
-    bind: $SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
+  /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/alsa-lib:
+    bind: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/alsa-lib
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
 
@@ -50,7 +50,7 @@ apps:
     environment:
       XDG_CONFIG_HOME: $SNAP_USER_COMMON/.config
       XDG_DATA_HOME: $SNAP_USER_DATA/.local/share
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
       ALSA_CARD: sysdefault:CARD=PCH
       # Force PulseAudio over ALSA
       ALWAYS_USE_PULSEAUDIO: "1"
@@ -72,17 +72,17 @@ parts:
       - etc/asound.conf
       - snap/command-chain/alsa-launch
       - usr/bin/yad*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/alsa-lib
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libasound*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libdnsfile*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libFLAC*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libjack*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libpulse*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsamplerate*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libspeex*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libsndfile*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libvorbis*
-      - usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libogg*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/alsa-lib
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libasound*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libdnsfile*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libFLAC*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libjack*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libpulse*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libsamplerate*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libspeex*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libsndfile*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libvorbis*
+      - usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libogg*
       - usr/share/alsa
 
   hullcaster:

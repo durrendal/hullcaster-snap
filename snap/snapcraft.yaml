@@ -52,7 +52,6 @@ apps:
       XDG_DATA_HOME: $SNAP_USER_DATA/.local/share
       LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
       ALSA_CARD: sysdefault:CARD=PCH
-      # Force PulseAudio over ALSA
       ALWAYS_USE_PULSEAUDIO: "1"
 
 parts:
@@ -100,14 +99,16 @@ parts:
     stage-packages:
       - libsqlite3-0
       - libssl3t64
-      - libasound2
-      - libasound2-plugins
       - libpulse0
       - libsndfile1
       - libdbus-1-3
       - ca-certificates
       - pulseaudio-utils
       - libportaudio2
+    stage:
+      # Exclude the conflicting ALSA libraries that alsa-mixin provides
+      - -usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libasound*
+      - -usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/alsa-lib
     override-build: |
       cargo build --release --locked
       install -D -m755 target/release/hullcaster $SNAPCRAFT_PART_INSTALL/bin/hullcaster

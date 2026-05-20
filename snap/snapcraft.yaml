@@ -8,7 +8,7 @@ issues:
 contact:
   - durrendal@lambdacreate.com
 base: core24
-version: v0.2.0
+version: v0.3.0
 summary: Terminal-based podcast manager built in Rust
 description: |
   Hullcaster is a terminal-based podcast manager with an ncurses-like interface.
@@ -44,14 +44,12 @@ apps:
       - network
       - home
       - audio-playback
-      - audio-record
       - pulseaudio
       - alsa
     environment:
       XDG_CONFIG_HOME: $SNAP_USER_COMMON/.config
       XDG_DATA_HOME: $SNAP_USER_DATA/.local/share
       LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/lib:$SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
-      ALSA_CARD: sysdefault:CARD=PCH
       ALWAYS_USE_PULSEAUDIO: "1"
 
 parts:
@@ -63,7 +61,7 @@ parts:
     build-packages:
       - libasound2-dev
     stage-packages:
-      - libasound2
+      - libasound2t64
       - libasound2-plugins
       - yad
     stage:
